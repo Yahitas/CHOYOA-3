@@ -1364,6 +1364,7 @@ blank_canvas |>
 
 ```{r}
 #for my project, will be creating a fractal pattern
+#from task 2 
 fractal_plot <- function(seed) {
 fractal_art <- function(fractal, generator, palette = NULL, ...) {
   blank_canvas |>
@@ -1392,8 +1393,9 @@ fractal_plot(345)
 ```
 
 ```{r}
+#from task 3
 text <- geom_text(
-  mapping = aes(0.5, 0.5, label = "不安"), 
+  mapping = aes(0.5, 0.5, label = "Negatives"), 
   size = 60, 
   colour = "black", 
   fontface = "bold"
@@ -1401,6 +1403,8 @@ text <- geom_text(
 ```
 
 ```{r}
-fractal_plot(345) + text
+#using task 3 and task 2
+#fractal_plot(345) + test
 ```
+I was able to incorporate both task 3 and task 2, but when rendering, the rendering gets stuck even after rendering for 40 minutes. 
 

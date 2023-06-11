@@ -1,0 +1,130 @@
+---
+title: "CHOYOA-03"
+author: Kyle Cahitas
+format: 
+  html:
+    toc: true
+    toc-location: left
+    theme: minty
+editor: visual
+execute: 
+  message: false 
+  warning: false 
+---
+
+
+# Task 4 
+
+
+
+```{r}
+#libraires 
+library(dplyr)
+library(purrr)
+library(tibble)
+library(ggplot2)
+library(ggthemes)
+library(ambient)
+library(ggforce)
+library(ggfx)
+library(flametree)
+
+```
+
+```{r}
+# the function sample_canva() does the work of generating random palettes 
+sample_canva <- function(seed = NULL) {
+  if(!is.null(seed)) set.seed(seed)
+  sample(ggthemes::canva_palettes, 1)[[1]]
+}
+```
+
+```{r}
+# using ambient we first need to set the x and y coords
+x_coords <- seq(from = 0, to = 1, length.out = 800)
+y_coords <- seq(from = 0, to = 1, length.out = 800)
+```
+
+```{r}
+# the "canvas" is what we are going to paint on and thus we set the x and y cords
+# using the function long_grid we can use it to easily convert them to arrays, matrices and raster objects that respect the implied spatial grid 
+canvas <- long_grid(x = x_coords, y = y_coords) 
+canvas
+```
+
+```{r}
+# by creating a blank_canvas, we can reuse as the starting point for our later pieces 
+# in this case, I am creating my own Canvas 
+blank_canvas <- long_grid(
+  x = seq(from = 0, to = 1, length.out = 2000),
+  y = seq(from = 0, to = 1, length.out = 2000)
+)  
+```
+
+```{r}
+# this code below, is good but we can simplfy it later and use dplyr
+# using this code for the "plot_painted_canvas", and over riding the blank_canvas now
+plot_painted_canvas <- function(canvas, palette = NULL) {
+  if(is.null(palette)) {
+    palette <- c("#e5ddc8","#01949a","#004369","#db1f48")
+  }
+  canvas %>% 
+    ggplot(aes(x, y, fill = paint)) + 
+    geom_raster(show.legend = FALSE) +
+    theme_void() +
+    coord_equal() +
+    scale_x_continuous(expand = c(0, 0)) +
+    scale_y_continuous(expand = c(0, 0)) +
+    scale_fill_gradientn(colours = palette)
+}
+```
+
+```{r}
+#combing blank_canvas with plot_painted_canvas 
+blank_canvas |>
+  mutate(paint = gen_perlin(x, y, frequency = 90, seed = 1234)) |>
+  plot_painted_canvas()
+```
+
+```{r}
+#for my project, will be creating a fractal pattern
+fractal_plot <- function(seed) {
+fractal_art <- function(fractal, generator, palette = NULL, ...) {
+  blank_canvas |>
+    mutate(
+      paint = fracture(
+        noise = generator,
+        fractal = fractal,
+        x = x, 
+        y = y, 
+        ...
+      )
+    ) |>
+    plot_painted_canvas(palette = c("#e5c9d1", "#1d3e4b", "#480607", "#db1f48")) #changed the color 
+}
+
+gf <- function(x) x * .69 # the ._ , changes the density of the plot, with the lower you go, the more denisty is shown, while the higher you go the less density you have
+
+fractal_art(ridged, gen_simplex, seed = 345, octaves = 20, gain = gf)
+# tried seeds = 420, 666, 323, 290, 606, 123, 458, 452, 433(maybe), 598, 345, 
+
+}
+```
+
+```{r}
+fractal_plot(345)
+```
+
+```{r}
+text <- geom_text(
+  mapping = aes(0.5, 0.5, label = "不安"), 
+  size = 60, 
+  colour = "black", 
+  fontface = "bold"
+)
+```
+
+```{r}
+fractal_plot(345) + text
+```
+

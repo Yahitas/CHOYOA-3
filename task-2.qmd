@@ -59,7 +59,7 @@ y_coords <- seq(from = 0, to = 1, length.out = 800)
 
 ```{r}
 # the "canvas" is what we are going to paint on and thus we set the x and y cords
-# using the function long_grid we can use it to easily convert them to arrays, matrices and raster obejcts that respect the implied spatial grid 
+# using the function long_grid we can use it to easily convert them to arrays, matrices and raster objects that respect the implied spatial grid 
 canvas <- long_grid(x = x_coords, y = y_coords) 
 canvas
 ```
